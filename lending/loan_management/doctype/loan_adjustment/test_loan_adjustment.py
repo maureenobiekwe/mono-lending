@@ -1,0 +1,179 @@
+# Copyright (c) 2023, Frappe Technologies Pvt. Ltd. and Contributors
+# See license.txt
+
+import frappe
+from frappe.utils import add_days, getdate, nowdate
+
+from lending.loan_management.doctype.process_loan_demand.process_loan_demand import (
+	process_daily_loan_demands,
+)
+from lending.loan_management.doctype.process_loan_interest_accrual.process_loan_interest_accrual import (
+	process_loan_interest_accrual_for_loans,
+)
+from lending.tests.test_utils import (
+	create_loan,
+	make_loan_disbursement_entry,
+	set_loan_accrual_frequency,
+)
+from lending.tests.utils import LendingTestSuite, with_days_past_due_repost
+
+
+class TestLoanAdjustment(LendingTestSuite):
+	applicant2 = "_Test Loan Customer"
+
+	@classmethod
+	def make_class_data(cls):
+		set_loan_accrual_frequency("Weekly")
+
+	def test_loan_adjustment_submit(self):
+		frappe.db.set_value("Loan Product", "Term Loan Product 4", "excess_amount_acceptance_limit", 100)
+		set_loan_accrual_frequency(loan_accrual_frequency="Monthly")
+
+		loan = create_loan(
+			"_Test Customer 1",
+			"Term Loan Product 4",
+			100000,
+			"Repay Over Number of Periods",
+			22,
+			repayment_start_date="2024-04-05",
+			posting_date="2024-02-20",
+			rate_of_interest=8.5,
+			applicant_type="Customer",
+		)
+
+		loan.submit()
+
+		make_loan_disbursement_entry(
+			loan.name, loan.loan_amount, disbursement_date="2024-02-20", repayment_start_date="2024-04-05"
+		)
+
+		process_loan_interest_accrual_for_loans(
+			posting_date="2024-04-04", loan=loan.name, company="_Test Company"
+		)
+
+		process_daily_loan_demands(loan=loan.name, posting_date="2024-04-05")
+
+		doc = frappe.get_doc(
+			{
+				"doctype": "Loan Adjustment",
+				"loan": loan.name,
+				"posting_date": getdate(),
+				"adjustments": [
+					{
+						"loan_repayment_type": "Interest Waiver",
+						"amount": 721.92,
+					}
+				],
+			}
+		).insert()
+
+		self.assertTrue(doc.submit())
+
+	@with_days_past_due_repost
+	def test_auto_security_deposit_adjust_within_auto_write_off_limit(self):
+		frappe.db.set_value("Loan Product", "Term Loan Product 4", "write_off_amount", 100)
+		frappe.db.set_value("Loan Product", "Term Loan Product 4", "excess_amount_acceptance_limit", 100)
+
+		set_loan_accrual_frequency(loan_accrual_frequency="Monthly")
+
+		# Dates are anchored to "today" rather than hardcoded, since the DPD repost
+		# triggered by foreclosure walks day-by-day from the last payment up to the
+		# real current date - a fixed 2024 date makes this test slower every day
+		# that passes in real time.
+		posting_date = add_days(nowdate(), -45)
+		repayment_start_date = add_days(nowdate(), -1)
+		foreclosure_date = add_days(nowdate(), -1)
+
+		loan = create_loan(
+			"_Test Customer 1",
+			"Term Loan Product 4",
+			100000,
+			"Repay Over Number of Periods",
+			22,
+			repayment_start_date=repayment_start_date,
+			posting_date=posting_date,
+			rate_of_interest=8.5,
+			applicant_type="Customer",
+		)
+
+		loan.submit()
+
+		disbursement = make_loan_disbursement_entry(
+			loan.name, loan.loan_amount, disbursement_date=posting_date, repayment_start_date=repayment_start_date
+		)
+
+		process_loan_interest_accrual_for_loans(
+			posting_date=add_days(repayment_start_date, -1), loan=loan.name, company="_Test Company"
+		)
+
+		process_daily_loan_demands(loan=loan.name, posting_date=repayment_start_date)
+
+		frappe.get_doc(
+			{
+				"doctype": "Loan Security Deposit",
+				"loan": loan.name,
+				"loan_disbursement": disbursement.name,
+				"deposit_amount": 1,
+				"available_amount": 1,
+			}
+		).submit()
+
+		doc = frappe.get_doc(
+			{
+				"doctype": "Loan Adjustment",
+				"loan": loan.name,
+				"posting_date": foreclosure_date,
+				"foreclosure_type": "Manual Foreclosure",
+				"adjustments": [
+					{
+						"loan_repayment_type": "Normal Repayment",
+						"amount": 100721,
+					}
+				],
+			}
+		).insert()
+
+		self.assertTrue(doc.submit())
+
+		loan.load_from_db()
+		self.assertEqual(loan.status, "Closed")
+		self.assertEqual(loan.closure_date, getdate(foreclosure_date))
+
+	def test_validate_foreclosure_adjustment(self):
+		loan = create_loan(
+			"_Test Customer 1",
+			"Term Loan Product 4",
+			100000,
+			"Repay Over Number of Periods",
+			22,
+			repayment_start_date="2024-04-05",
+			posting_date="2024-02-20",
+			rate_of_interest=8.5,
+			applicant_type="Customer",
+		)
+		loan.submit()
+
+		make_loan_disbursement_entry(
+			loan.name, loan.loan_amount, disbursement_date="2024-02-20", repayment_start_date="2024-04-05"
+		)
+
+		process_loan_interest_accrual_for_loans(
+			posting_date="2024-04-01", loan=loan.name, company="_Test Company"
+		)
+
+		loan_adjustment = frappe.get_doc(
+			{
+				"doctype": "Loan Adjustment",
+				"loan": loan.name,
+				"posting_date": "2024-04-01",
+				"foreclosure_type": "Manual Foreclosure",
+				"adjustments": [
+					{
+						"loan_repayment_type": "Normal Repayment",
+						"amount": 96030.79,
+					}
+				],
+			}
+		)
+
+		self.assertRaises(frappe.ValidationError, loan_adjustment.save)

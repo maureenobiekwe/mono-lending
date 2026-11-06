@@ -1,0 +1,47 @@
+---
+name: Feature Request
+description: Suggest an idea to improve Mono Lending
+labels: ["feature-request"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Welcome to the Mono Lending issue tracker! Before submitting a request, please consider the following:
+
+        1. This tracker should only be used to report bugs and request features or enhancements for Mono Lending.
+            - For questions and general support, please review the project README or open a new issue in this repository.
+        2. Use the search function before creating a new issue. Duplicates will be closed and directed to
+          the original discussion.
+        3. When making a feature request, make sure to be as verbose as possible. The better you convey your message, the greater the drive to make it happen.
+
+
+        Please keep in mind that we get many requests and we can't possibly work on all of them. We prioritize development based on the goals of the product and organization. Feature requests are still welcome as they help us in research when we decide to work on the requested feature.
+
+        If you need a feature urgently, please describe your use case with as much detail as possible so the team can assess it.
+
+  - type: textarea
+    id: problem-info
+    attributes:
+      label: Is your feature request related to a problem? Please describe.
+      description: A clear and concise description of what the problem is. Eg. I'm always frustrated when [...]
+      placeholder: Please provide as much information as possible.
+
+  - type: textarea
+    id: solution-info
+    attributes:
+      label: Describe the solution you'd like
+      description: A clear and concise description of what you want to happen.
+
+  - type: textarea
+    id: alternatives-info
+    attributes:
+      label: Describe the alternatives you've considered
+      description: A clear and concise description of any alternative solutions or features you've considered.
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional context
+      description: Add any other context or screenshots about the feature request here.
+...
