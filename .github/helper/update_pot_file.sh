@@ -22,7 +22,7 @@ git config user.name "frappe-pr-bot"
 
 echo "Setting the correct git remote..."
 # Here, the git remote is a local file path by default. Let's change it to the upstream repo.
-git remote set-url upstream https://github.com/maureenobiekwe/monolending.git
+git remote set-url upstream https://github.com/maureenobiekwe/mono-lending.git
 
 echo "Creating a new branch..."
 isodate=$(date -u +"%Y-%m-%d")
@@ -37,4 +37,4 @@ gh auth setup-git
 git push -u upstream "${branch_name}"
 
 echo "Creating a PR..."
-gh pr create --fill --base "${BASE_BRANCH}" --head "${branch_name}" -R maureenobiekwe/monolending
+gh pr create --fill --base "${BASE_BRANCH}" --head "${branch_name}" -R maureenobiekwe/mono-lending

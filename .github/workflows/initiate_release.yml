@@ -22,7 +22,7 @@ jobs:
         with:
           route: POST /repos/{owner}/{repo}/pulls
           owner: maureenobiekwe
-          repo: monolending
+          repo: mono-lending
           title: |-
             "chore: release v${{ matrix.version }}"
           body: "Automated Release."

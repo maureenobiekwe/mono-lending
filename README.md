@@ -5,7 +5,7 @@
 	<h2>Mono Lending</h2>
 	<p align="center">Nigerian open-source loan management system</p>
 
-[![CI](https://github.com/maureenobiekwe/mono-lending/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/maureenobiekwe/monolending/actions/workflows/ci.yml)
+[![CI](https://github.com/maureenobiekwe/mono-lending/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/maureenobiekwe/mono-lending/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/maureenobiekwe/mono-lending/branch/develop/graph/badge.svg)](https://codecov.io/gh/maureenobiekwe/mono-lending)
 
 </div>
