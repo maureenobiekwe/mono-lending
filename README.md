@@ -1,5 +1,5 @@
 <div align="center">
-	<a href="https://github.com/maureenobiekwe/monolending">
+	<a href="https://github.com/maureenobiekwe/mono-lending">
 		<div style="display:inline-block; width:80px; height:80px; border-radius:18px; background:#0F172A; color:#F8FAFC; font-size:40px; line-height:80px; font-weight:700;">M</div>
 	</a>
 	<h2>Mono Lending</h2>
@@ -15,11 +15,11 @@
 </div>
 
 <div align="center">
-	<a href="https://github.com/maureenobiekwe/monolending">Repository</a>
+	<a href="https://github.com/maureenobiekwe/mono-lending">Repository</a>
 	-
-	<a href="https://github.com/maureenobiekwe/monolending/issues">Issues</a>
+	<a href="https://github.com/maureenobiekwe/mono-lending/issues">Issues</a>
 	-
-	<a href="https://github.com/maureenobiekwe/monolending/discussions">Discussions</a>
+	<a href="https://github.com/maureenobiekwe/mono-lending/discussions">Discussions</a>
 </div>
 
 ## Mono Lending
@@ -29,8 +29,8 @@ Mono Lending is a localized Nigerian open-source loan management system designed
 ## Author & Repository Owner
 
 - Author: Kosisochukwu Maureen Obiekwe
-- Repository owner: maureenobiekwe
-- Repository: https://github.com/maureenobiekwe/monolending
+- Repository owner: Maureen Obiekwe
+- Repository: https://github.com/maureenobiekwe/mono-lending
 
 ## Key Features
 
@@ -48,13 +48,10 @@ Mono Lending is built on open-source ERP and business workflow tooling to suppor
 
 ## Contributing
 
-1. [Issue Guidelines](https://github.com/maureenobiekwe/monolending/issues)
-1. [Report Security Vulnerabilities](https://github.com/maureenobiekwe/monolending/security)
-1. [Pull Request Requirements](https://github.com/maureenobiekwe/monolending/pulls)
+1. [Issue Guidelines](https://github.com/maureenobiekwe/mono-lending/issues)
+1. [Report Security Vulnerabilities](https://github.com/maureenobiekwe/mono-lending/security)
+1. [Pull Request Requirements](https://github.com/maureenobiekwe/mono-lending/pulls)
 
-## Logo and Trademark Policy
-
-This repository uses a neutral Mono Lending identity and no longer relies on third-party branding assets or Frappe trademarks.
 
 <br />
 <br />
@@ -62,4 +59,4 @@ This repository uses a neutral Mono Lending identity and no longer relies on thi
 	<strong>Mono Lending</strong>
 </div>
 
-# raso_bank
+
